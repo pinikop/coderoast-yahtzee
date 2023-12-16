@@ -2,7 +2,7 @@ import random
 from typing import Optional
 
 
-class Die(object):
+class Die:
     def __init__(self, face: Optional[int] = None, sides=6):
         self.sides = sides
         if face is not None:
