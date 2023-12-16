@@ -5,37 +5,14 @@
 This python program will simulate a game of Yahtzee
 """
 
-import sys
 import os
-import random
 import re
+import sys
 
-
-class Die(object):
-
-    def __init__(self, sides=6):
-        self.sides = sides
-        # Make __face private to prevent cheating
-        self.__face = None
-
-    def roll(self):
-        self.__face = random.randint(1, 6)
-
-    def clear(self):
-        self.__face = None
-
-    def get_face(self):
-        return self.__face
-
-    def __str__(self):
-        if self.__face:
-            return "Value: " + str(self.__face)
-        else:
-            return "Die has not been thrown"
+from die import Die
 
 
 class Hand(object):
-
     def __init__(self, dice=5, sides=6):
         self.dice = dice
         self.hand = []
@@ -59,15 +36,17 @@ class Hand(object):
         rolls = 0
         while rolls < 2:
             try:
-                reroll = input("\nChoose which dice to re-roll "
-                               "(comma-separated or 'all'), or 0 to continue: ")
+                reroll = input(
+                    "\nChoose which dice to re-roll "
+                    "(comma-separated or 'all'), or 0 to continue: "
+                )
 
                 if reroll.lower() == "all":
                     reroll = list(range(1, 6))
                 else:
                     # Perform some clean-up of input
                     reroll = reroll.replace(" ", "")  # Remove spaces
-                    reroll = re.sub('[^0-9,]', '', reroll)  # Remove non-numerals
+                    reroll = re.sub("[^0-9,]", "", reroll)  # Remove non-numerals
                     reroll = reroll.split(",")  # Turn string into list
                     reroll = list(map(int, reroll))  # Turn strings in list to int
             except ValueError:
@@ -83,7 +62,7 @@ class Hand(object):
                 break
             else:
                 for i in reroll:
-                    self.hand[i-1].roll()
+                    self.hand[i - 1].roll()
                 self.show_hand()
                 rolls += 1
 
@@ -99,7 +78,6 @@ class Hand(object):
 
 
 class Rules(object):
-
     def __init__(self):
         self.rules_map = {
             1: self.aces,
@@ -180,9 +158,11 @@ class Rules(object):
         try:
             if len(hand) >= 4:
                 for idx, val in enumerate(hand):
-                    if hand[idx+1] == val+1 and \
-                        hand[idx+2] == val+2 and \
-                        hand[idx+3] == val+3:
+                    if (
+                        hand[idx + 1] == val + 1
+                        and hand[idx + 2] == val + 2
+                        and hand[idx + 3] == val + 3
+                    ):
                         return 30
         except IndexError:
             pass
@@ -193,10 +173,12 @@ class Rules(object):
         try:
             if len(hand) >= 5:
                 for idx, val in enumerate(hand):
-                    if hand[idx+1] == val+1 and \
-                        hand[idx+2] == val+2 and \
-                        hand[idx+3] == val+3 and \
-                        hand[idx+4] == val+4:
+                    if (
+                        hand[idx + 1] == val + 1
+                        and hand[idx + 2] == val + 2
+                        and hand[idx + 3] == val + 3
+                        and hand[idx + 4] == val + 4
+                    ):
                         return 40
         except IndexError:
             pass
@@ -212,7 +194,6 @@ class Rules(object):
 
 
 class ScoreBoard(object):
-
     # TODO: Everything
     def __init__(self):
         self.scoreboard_rows = {
@@ -242,9 +223,10 @@ class ScoreBoard(object):
                 print("ScoreBoard already saved!")
                 return False
             else:
-                print("Adding {} points to {}".format(
-                    value,
-                    self.scoreboard_rows[int(row)])
+                print(
+                    "Adding {} points to {}".format(
+                        value, self.scoreboard_rows[int(row)]
+                    )
                 )
                 self.__scoreboard_points[row] = value
                 return True
@@ -261,16 +243,17 @@ class ScoreBoard(object):
         print("===================================")
         for idx, row in self.scoreboard_rows.items():
             try:
-                print("{:<2} {:<21}| {:2} points".format(idx+1,
-                      row,
-                      self.__scoreboard_points[idx]))
+                print(
+                    "{:<2} {:<21}| {:2} points".format(
+                        idx + 1, row, self.__scoreboard_points[idx]
+                    )
+                )
             except KeyError:
-                print("{:<2} {:<21}|".format(idx+1, row))
+                print("{:<2} {:<21}|".format(idx + 1, row))
         print("===================================")
 
     def select_scoring(self, hand):
-        msg = "Choose which scoring to use "\
-               "(leave empty to show available rows): "
+        msg = "Choose which scoring to use " "(leave empty to show available rows): "
         scoreboard_row = False
         score_saved = False
         while not scoreboard_row and not score_saved:
@@ -280,7 +263,7 @@ class ScoreBoard(object):
                 scoreboard_row = False
                 continue
             try:
-                scoreboard_row = int(re.sub('[^0-9,]', '', scoreboard_row))
+                scoreboard_row = int(re.sub("[^0-9,]", "", scoreboard_row))
             except ValueError:
                 print("You entered something other than a number.")
                 print("Please try again")
@@ -292,21 +275,22 @@ class ScoreBoard(object):
                 continue
             else:
                 score_saved = self.set_scoreboard_row_value(
-                    int(scoreboard_row),
-                    Rules().rules_map[int(scoreboard_row)](hand)
+                    int(scoreboard_row), Rules().rules_map[int(scoreboard_row)](hand)
                 )
 
 
 def Main():
-    os.system('cls' if os.name == 'nt' else 'clear')
-    print("""
+    os.system("cls" if os.name == "nt" else "clear")
+    print(
+        """
 YAHTZEE
 
 Welcome to the game. To begin, simply press [Enter]
 and follow the instructions on the screen.
 
 To exit, press [Ctrl+C]
-""")
+"""
+    )
 
     # Begin by instantiating the hand and scoreboard
     hand = Hand(5, 6)
@@ -321,14 +305,14 @@ To exit, press [Ctrl+C]
         scoreboard.show_scoreboard_points()
 
         input("\nPress any key to continue")
-        os.system('cls' if os.name == 'nt' else 'clear')
+        os.system("cls" if os.name == "nt" else "clear")
 
     print("\nCongratulations! You finished the game!\n")
     scoreboard.show_scoreboard_points()
     print("Total points: {}".format(sum(scoreboard.get_scoreboard_points().values())))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         Main()
     except KeyboardInterrupt:
