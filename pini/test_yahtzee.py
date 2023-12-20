@@ -1,10 +1,42 @@
 import unittest
 
-from yahtzee import *
+from die import Die
+from hand import Hand
+from rules.yahtzee import (
+    Aces,
+    Chance,
+    FibonYahtzee,
+    FourOfAKind,
+    FullHouse,
+    LargeStraight,
+    SmallStraight,
+    ThreeOfAKind,
+    Yahtzee,
+)
+
+
+class DieTestCase(unittest.TestCase):
+    def test_sides_per_die(self):
+        for _ in range(50):
+            self.assertEqual(Die(sides=1).get_face(), 1)
+
+    def test_set_face(self):
+        die = Die(face=3)
+        self.assertEqual(die.get_face(), 3)
+
+    def test_to_string(self):
+        die = Die()
+        self.assertEqual(str(die.get_face()), str(die))
+
+    def test_roll(self):
+        for i in range(1, 20):
+            die = Die(sides=i)
+            for _ in range(10000):
+                die.roll()
+                self.assertTrue(1 <= die.get_face() <= i)
 
 
 class HandTestCase(unittest.TestCase):
-
     def test_hand_number_of_dice(self):
         hand = Hand(15, 6)
         self.assertEqual(len(hand.hand), 15)
@@ -16,69 +48,72 @@ class HandTestCase(unittest.TestCase):
 
 
 class RulesTestCase(unittest.TestCase):
-
     def test_aces(self):
         hand = Hand()
-        for i in hand.hand:
-            i._Die__face = 1
-        self.assertEqual(Rules().aces(hand), 5)
+        hand.set_hand([1] * 5)
+        self.assertEqual(Aces().score(hand), 5)
 
     def test_three_of_a_kind(self):
         hand = Hand()
-        for i in range(3):
-            hand.hand[i]._Die__face = 1
-        for i in range(3, 5):
-            hand.hand[i]._Die__face = 2
-        self.assertEqual(Rules().three_of_a_kind(hand), 7)
+        hand.set_hand([1, 1, 1, 2, 2])
+        self.assertEqual(ThreeOfAKind().score(hand), 7)
+        self.assertNotEqual(ThreeOfAKind().score(hand), 6)
 
     def test_four_of_a_kind(self):
         hand = Hand()
-        for i in range(4):
-            hand.hand[i]._Die__face = 1
-        for i in range(4, 5):
-            hand.hand[i]._Die__face = 2
-        self.assertEqual(Rules().four_of_a_kind(hand), 6)
+        hand.set_hand([1, 1, 1, 1, 2])
+        self.assertEqual(FourOfAKind().score(hand), 6)
 
     def test_full_house(self):
         hand = Hand()
-        for i in range(1):
-            hand.hand[i]._Die__face = 2
-        for i in range(1, 3):
-            hand.hand[i]._Die__face = 2
-        for i in range(3, 5):
-            hand.hand[i]._Die__face = 3
-        self.assertEqual(Rules().full_house(hand), 25)
+        hand.set_hand([2, 2, 3, 3, 3])
+        self.assertEqual(FullHouse().score(hand), 25)
+
+    def test_no_full_house(self):
+        hand = Hand()
+        hand.set_hand([2, 2, 4, 3, 3])
+        self.assertEqual(FullHouse().score(hand), 0)
 
     def test_small_straight(self):
         hand = Hand()
-        hand.hand[0]._Die__face = 4
-        hand.hand[1]._Die__face = 3
-        hand.hand[2]._Die__face = 5
-        hand.hand[3]._Die__face = 2
-        hand.hand[4]._Die__face = 5
-        self.assertEqual(Rules().small_straight(hand), 30)
+        hand.set_hand([4, 3, 5, 2, 5])
+        self.assertEqual(SmallStraight().score(hand), 30)
+        hand.set_hand([4, 3, 3, 2, 5])
+        self.assertEqual(SmallStraight().score(hand), 30)
+        hand.set_hand([4, 1, 2, 2, 5])
+        self.assertEqual(SmallStraight().score(hand), 0)
 
     def test_large_straight(self):
         hand = Hand()
-        hand.hand[0]._Die__face = 4
-        hand.hand[1]._Die__face = 3
-        hand.hand[2]._Die__face = 5
-        hand.hand[3]._Die__face = 2
-        hand.hand[4]._Die__face = 1
-        self.assertEqual(Rules().large_straight(hand), 40)
+        hand.set_hand([4, 3, 5, 2, 1])
+        self.assertEqual(LargeStraight().score(hand), 40)
+        hand.set_hand([4, 3, 5, 2, 6])
+        self.assertEqual(LargeStraight().score(hand), 40)
+        hand.set_hand([4, 1, 5, 2, 6])
+        self.assertEqual(LargeStraight().score(hand), 0)
+
+    def test_no_large_straight(self):
+        hand = Hand()
+        hand.set_hand([5, 3, 6, 2, 1])
+        self.assertEqual(LargeStraight().score(hand), 0)
 
     def test_yahtzee(self):
         hand = Hand()
-        for i in hand.hand:
-            i._Die__face = 3
-        self.assertEqual(Rules().yahtzee(hand), 50)
+        hand.set_hand([3, 3, 3, 3, 3])
+        self.assertEqual(Yahtzee().score(hand), 50)
 
     def test_chance(self):
         hand = Hand()
-        for i in range(5):
-            hand.hand[i]._Die__face = i + 1
-        self.assertEqual(Rules().chance(hand), 15)
+        hand.set_hand([1, 2, 3, 4, 5])
+        self.assertEqual(Chance().score(hand), 15)
 
-print(list(range(1, 5)))
-if __name__ == '__main__':
+    def test_fibonyahtzee(self):
+        hand = Hand()
+        hand.set_hand([1, 1, 2, 3, 5])
+        self.assertEqual(FibonYahtzee().score(hand), 100)
+        hand.set_hand([2, 1, 2, 3, 5])
+        self.assertEqual(FibonYahtzee().score(hand), 0)
+
+
+if __name__ == "__main__":
     unittest.main()
