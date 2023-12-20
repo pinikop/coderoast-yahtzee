@@ -14,11 +14,11 @@ class Rule:
     def points(self, hand: Hand) -> int:
         ...
 
-    def to_score(self, hand: Optional[Hand] = None) -> bool:
+    def to_assign(self, hand: Optional[Hand] = None) -> bool:
         ...
 
-    def score(self, hand: Hand) -> int:
-        return self.points(hand) if self.to_score(hand) else 0
+    def assign_points(self, hand: Hand) -> int:
+        return self.points(hand) if self.to_assign(hand) else 0
 
 
 @dataclass
@@ -28,7 +28,7 @@ class SameValueRule(Rule):
     def points(self, hand: Hand) -> int:
         return hand.count_occurrences(self.value) * self.value
 
-    def to_score(self, hand) -> bool:
+    def to_assign(self, hand) -> bool:
         return True
 
 
@@ -39,7 +39,7 @@ class NOfAKind(Rule):
     def points(self, hand: Hand) -> int:
         return hand.sum
 
-    def to_score(self, hand: Hand) -> bool:
+    def to_assign(self, hand: Hand) -> bool:
         return max(hand.counter.values()) >= self.value
 
 
@@ -55,6 +55,6 @@ class FixPointsRule(Rule):
 class Straight(FixPointsRule):
     size: int
 
-    def to_score(self, hand: Hand) -> bool:
+    def to_assign(self, hand: Hand) -> bool:
         dice = set(hand.get_hand())
         return (len(dice) == self.size) and (max(dice) - min(dice) == (self.size - 1))

@@ -50,68 +50,68 @@ class RulesTestCase(unittest.TestCase):
     def test_aces(self):
         hand = Hand()
         hand.set_hand([1] * 5)
-        self.assertEqual(Aces().score(hand), 5)
+        self.assertEqual(Aces().assign_points(hand), 5)
 
     def test_three_of_a_kind(self):
         hand = Hand()
         hand.set_hand([1, 1, 1, 2, 2])
-        self.assertEqual(ThreeOfAKind().score(hand), 7)
-        self.assertNotEqual(ThreeOfAKind().score(hand), 6)
+        self.assertEqual(ThreeOfAKind().assign_points(hand), 7)
+        self.assertNotEqual(ThreeOfAKind().assign_points(hand), 6)
 
     def test_four_of_a_kind(self):
         hand = Hand()
         hand.set_hand([1, 1, 1, 1, 2])
-        self.assertEqual(FourOfAKind().score(hand), 6)
+        self.assertEqual(FourOfAKind().assign_points(hand), 6)
 
     def test_full_house(self):
         hand = Hand()
         hand.set_hand([2, 2, 3, 3, 3])
-        self.assertEqual(FullHouse().score(hand), 25)
+        self.assertEqual(FullHouse().assign_points(hand), 25)
 
     def test_no_full_house(self):
         hand = Hand()
         hand.set_hand([2, 2, 4, 3, 3])
-        self.assertEqual(FullHouse().score(hand), 0)
+        self.assertEqual(FullHouse().assign_points(hand), 0)
 
     def test_small_straight(self):
         hand = Hand()
         hand.set_hand([4, 3, 5, 2, 5])
-        self.assertEqual(SmallStraight().score(hand), 30)
+        self.assertEqual(SmallStraight().assign_points(hand), 30)
         hand.set_hand([4, 3, 3, 2, 5])
-        self.assertEqual(SmallStraight().score(hand), 30)
+        self.assertEqual(SmallStraight().assign_points(hand), 30)
         hand.set_hand([4, 1, 2, 2, 5])
-        self.assertEqual(SmallStraight().score(hand), 0)
+        self.assertEqual(SmallStraight().assign_points(hand), 0)
 
     def test_large_straight(self):
         hand = Hand()
         hand.set_hand([4, 3, 5, 2, 1])
-        self.assertEqual(LargeStraight().score(hand), 40)
+        self.assertEqual(LargeStraight().assign_points(hand), 40)
         hand.set_hand([4, 3, 5, 2, 6])
-        self.assertEqual(LargeStraight().score(hand), 40)
+        self.assertEqual(LargeStraight().assign_points(hand), 40)
         hand.set_hand([4, 1, 5, 2, 6])
-        self.assertEqual(LargeStraight().score(hand), 0)
+        self.assertEqual(LargeStraight().assign_points(hand), 0)
 
     def test_no_large_straight(self):
         hand = Hand()
         hand.set_hand([5, 3, 6, 2, 1])
-        self.assertEqual(LargeStraight().score(hand), 0)
+        self.assertEqual(LargeStraight().assign_points(hand), 0)
 
     def test_yahtzee(self):
         hand = Hand()
         hand.set_hand([3, 3, 3, 3, 3])
-        self.assertEqual(Yahtzee().score(hand), 50)
+        self.assertEqual(Yahtzee().assign_points(hand), 50)
 
     def test_chance(self):
         hand = Hand()
         hand.set_hand([1, 2, 3, 4, 5])
-        self.assertEqual(Chance().score(hand), 15)
+        self.assertEqual(Chance().assign_points(hand), 15)
 
     def test_fibonyahtzee(self):
         hand = Hand()
         hand.set_hand([1, 1, 2, 3, 5])
-        self.assertEqual(FibonYahtzee().score(hand), 100)
+        self.assertEqual(FibonYahtzee().assign_points(hand), 100)
         hand.set_hand([2, 1, 2, 3, 5])
-        self.assertEqual(FibonYahtzee().score(hand), 0)
+        self.assertEqual(FibonYahtzee().assign_points(hand), 0)
 
 
 if __name__ == "__main__":

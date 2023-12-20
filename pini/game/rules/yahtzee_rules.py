@@ -57,7 +57,7 @@ class FullHouse(FixPointsRule):
     rule_name: str = "Full house"
     _points: int = 25
 
-    def to_score(self, hand: Hand) -> bool:
+    def to_assign(self, hand: Hand) -> bool:
         return set([2, 3]) == set(hand.counter.values())
 
 
@@ -80,7 +80,7 @@ class Yahtzee(FixPointsRule):
     rule_name: str = "Yahtzee"
     _points: int = 50
 
-    def to_score(self, hand: Hand) -> bool:
+    def to_assign(self, hand: Hand) -> bool:
         return len(set(hand.get_hand())) == 1
 
 
@@ -89,7 +89,7 @@ class FibonYahtzee(FixPointsRule):
     rule_name: str = "FibonYahtzee"
     _points: int = 100
 
-    def to_score(self, hand: Hand) -> bool:
+    def to_assign(self, hand: Hand) -> bool:
         return sorted(hand.get_hand()) == [1, 1, 2, 3, 5]
 
 
@@ -100,5 +100,5 @@ class Chance(Rule):
     def points(self, hand: Hand) -> int:
         return hand.sum
 
-    def to_score(self, hand: Hand) -> bool:
+    def to_assign(self, hand: Hand) -> bool:
         return True
