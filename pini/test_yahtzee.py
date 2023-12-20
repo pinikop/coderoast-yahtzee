@@ -1,7 +1,6 @@
 import unittest
 
-from game.die import Die
-from game.hand import Hand
+from game import Die, Hand
 from game.rules import (
     Aces,
     Chance,
