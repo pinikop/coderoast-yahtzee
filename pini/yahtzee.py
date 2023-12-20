@@ -14,8 +14,12 @@ from game.rules import *
 
 
 class YahtzeeGame:
-    def __init__(self) -> None:
+    @staticmethod
+    def clear_screen():
         os.system("cls" if os.name == "nt" else "clear")
+
+    def __init__(self) -> None:
+        self.clear_screen()
         print(
             """
         YAHTZEE
@@ -123,7 +127,7 @@ class YahtzeeGame:
             self.show_scoreboard_points()
 
             input("\nPress any key to continue")
-            os.system("cls" if os.name == "nt" else "clear")
+            self.clear_screen()
 
     def play(self):
         # We keep going until the scoreboard is full
