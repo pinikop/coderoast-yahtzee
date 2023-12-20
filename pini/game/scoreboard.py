@@ -6,8 +6,8 @@ from game.rules import Rule
 
 class ScoreBoard:
     def __init__(self):
-        self.rules = []
-        self.points = []
+        self.rules: List[Rule] = []
+        self.points: List[Optional[int]] = []
 
     @property
     def rules_count(self):
@@ -15,14 +15,14 @@ class ScoreBoard:
 
     def register_rules(self, rule: List):
         self.rules.extend(rule)
-        self.points = [0] * self.rules_count
+        self.points = [None] * self.rules_count
 
     def get_rule(self, row: int):
         return self.rules[row]
 
     def assign_points(self, rule: Rule, hand: Hand):
         row = self.rules.index(rule)
-        if self.points[row] > 0:
+        if self.points[row] is not None:
             raise Exception("ScoreBoard already saved!")
         points = rule.assign_points(hand)
         self.points[row] = points
@@ -30,7 +30,7 @@ class ScoreBoard:
 
     @property
     def total_points(self):
-        return sum(self.points)
+        return sum(x for x in self.points if x is not None)
 
     def view_points(self, hand: Optional[Hand] = None):
         strs = []
