@@ -1,3 +1,4 @@
+from .base_rules import Rule
 from .yahtzee_rules import (
     Aces,
     Chance,
@@ -16,6 +17,7 @@ from .yahtzee_rules import (
 )
 
 __all__ = [
+    "Rule",
     "Aces",
     "Twos",
     "Threes",
