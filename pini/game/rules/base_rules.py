@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from hand import Hand
+from ..hand import Hand
 
 
 @dataclass

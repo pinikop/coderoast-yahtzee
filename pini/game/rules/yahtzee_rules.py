@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from hand import Hand
-from rules.base import FixPointsRule, NOfAKind, Rule, SameValueRule, Straight
+from ..hand import Hand
+from .base_rules import FixPointsRule, NOfAKind, Rule, SameValueRule, Straight
 
 
 @dataclass

@@ -1,8 +1,8 @@
 import unittest
 
-from die import Die
-from hand import Hand
-from rules.yahtzee import (
+from game.die import Die
+from game.hand import Hand
+from game.rules import (
     Aces,
     Chance,
     FibonYahtzee,
