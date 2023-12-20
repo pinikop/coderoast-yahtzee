@@ -15,6 +15,9 @@ class Hand:
         self.sides = sides
         self.hand = [Die(self.sides) for _ in range(self.dice)]
 
+    def all_dice(self):
+        return list(range(1, self.dice + 1))
+
     def roll(self, dice: list[int]) -> None:
         """rolls the specified dice
 
@@ -25,7 +28,7 @@ class Hand:
             IndexError: if a die that is not in the hand
         """
         if not all(1 <= num <= self.dice for num in dice):
-            raise IndexError("Dice must be between 1 and " + str(self.dice))
+            raise IndexError(f"Dice must be between 1 and {str(self.dice)}")
         for i in dice:
             self.hand[i - 1].roll()
 

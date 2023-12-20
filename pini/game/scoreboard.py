@@ -37,8 +37,9 @@ class ScoreBoard:
         for idx, rule in enumerate(self.rules):
             points = self.points[idx]
             view_str = f"{idx + 1}. {rule.name}: "
-            if hand is not None and points == 0 and rule.points > 0:
+            if hand is not None and points == 0 and rule.points(hand) > 0:
                 view_str += f"+{rule.assign_points(hand)} points ***"
             else:
                 view_str += f"{points} points"
             strs.append(view_str)
+        return "\n".join(strs)

@@ -8,6 +8,7 @@ from ..hand import Hand
 class Rule:
     rule_name: str
 
+    @property
     def name(self):
         return self.rule_name
 
