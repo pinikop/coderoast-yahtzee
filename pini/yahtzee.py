@@ -60,7 +60,7 @@ class YahtzeeGame:
         print(self.scoreboard.view_points(hand))
         print("===================================")
 
-    def select_scoring(self, hand):
+    def select_scoring(self):
         while True:
             scoreboard_row = input("Choose which scoring to use: ")
             try:
@@ -115,7 +115,7 @@ class YahtzeeGame:
 
             # if we reached maximum number of rolls, we are done
             if rolls > 3 or len(selected_dice) == 0:
-                rule = self.select_scoring(hand)
+                rule = self.select_scoring()
                 points = self.scoreboard.assign_points(rule, hand)
                 print(f"Adding {points} points to {rule.name}")
                 self.show_scoreboard_points()
