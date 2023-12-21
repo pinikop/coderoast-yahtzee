@@ -85,13 +85,15 @@ class YahtzeeGame:
 
                 else:
                     # Perform some clean-up of input
-                    reroll = reroll.replace(" ", "")  # Remove spaces
-                    reroll = re.sub("[^0-9,]", "", reroll)  # Remove non-numerals
-                    reroll = reroll.split(",")  # Turn string into list
+                    reroll = reroll.replace(" ", "").split(",")
                     reroll = list(map(int, reroll))  # Turn strings in list to int
 
                 if not reroll or 0 in reroll:
                     return []
+                elif not all(num in range(1, 6) for num in reroll):
+                    print(
+                        "You tried to reroll a die that doesn't exist. \nPlease try again"
+                    )
                 else:
                     return reroll
 
