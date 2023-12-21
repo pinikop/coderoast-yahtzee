@@ -33,26 +33,26 @@ class YahtzeeGame:
         """
         )
 
-        # Begin by instantiating the hand and scoreboard
-        self.scoreboard = ScoreBoard()
+        # Begin by instantiating the scoreboard
+        rules_list = [
+            Aces(),
+            Twos(),
+            Threes(),
+            Fours(),
+            Fives(),
+            Sixes(),
+            ThreeOfAKind(),
+            FourOfAKind(),
+            FullHouse(),
+            SmallStraight(),
+            LargeStraight(),
+            Yahtzee(),
+            Chance(),
+        ]
 
-        self.scoreboard.register_rules(
-            [
-                Aces(),
-                Twos(),
-                Threes(),
-                Fours(),
-                Fives(),
-                Sixes(),
-                ThreeOfAKind(),
-                FourOfAKind(),
-                FullHouse(),
-                SmallStraight(),
-                LargeStraight(),
-                Yahtzee(),
-                Chance(),
-            ]
-        )
+        self.scoreboard = ScoreBoard(rules_list)
+        self.__n_dices = 5
+        self.__all_dices = list(range(1, self.__n_dices + 1))
 
     def show_scoreboard_points(self, hand: Optional[Hand] = None):
         print("\nSCOREBOARD")
@@ -62,13 +62,14 @@ class YahtzeeGame:
 
     def select_scoring(self):
         while True:
-            scoreboard_row = input("Choose which scoring to use: ")
             try:
-                scoreboard_row_int = int(re.sub("[^0-9,]", "", scoreboard_row))
-                if not (1 <= scoreboard_row_int <= self.scoreboard.rules_count):
+                scoreboard_row = int(input("Choose which scoring to use: "))
+                if not (1 <= scoreboard_row <= self.scoreboard.rules_count):
                     print("Please select an existing scoring rule.")
+                elif scoreboard_row in self.scoreboard.rules_used:
+                    print("Please select a new scoring rule")
                 else:
-                    return self.scoreboard.get_rule(scoreboard_row_int - 1)
+                    return scoreboard_row
             except ValueError:
                 print("You entered something other than a number. Please try again")
 
@@ -81,7 +82,7 @@ class YahtzeeGame:
                 )
 
                 if reroll.lower() == "all":
-                    reroll = list(range(1, 6))
+                    reroll = self.__all_dices
 
                 else:
                     # Perform some clean-up of input
@@ -90,7 +91,7 @@ class YahtzeeGame:
 
                 if not reroll or 0 in reroll:
                     return []
-                elif not all(num in range(1, 6) for num in reroll):
+                elif not all(num in self.__all_dices for num in reroll):
                     print(
                         "You tried to reroll a die that doesn't exist. \nPlease try again"
                     )
@@ -101,12 +102,12 @@ class YahtzeeGame:
                 print("You entered something other than a number.")
                 print("Please try again")
 
-    def do_turn(self):
-        hand = Hand()
+    def play_round(self):
+        hand = Hand(dice=self.__n_dices)
         selected_dice = hand.all_dice()
         rolls = 1
         while rolls <= 3:
-            print(f"\nRolling Dice... {ROUNDS[rolls]} round")
+            print(f"\nRolling Dice... {ROUNDS[rolls]} roll")
             if rolls > 1:
                 # choose which dice to re-roll
                 selected_dice = self.choose_dice_reroll()
@@ -119,17 +120,18 @@ class YahtzeeGame:
             if rolls > 3 or len(selected_dice) == 0:
                 rule = self.select_scoring()
                 points = self.scoreboard.assign_points(rule, hand)
-                print(f"Adding {points} points to {rule.name}")
+                print(f"Adding {points} points to {self.scoreboard.rules[rule].name}")
                 self.show_scoreboard_points()
+                self.scoreboard.rules_used.add(rule)
 
                 input("\nPress any key to continue")
                 self.clear_screen()
                 break
 
-    def play(self):
+    def play_game(self):
         # We keep going until the scoreboard is full
         for _ in range(self.scoreboard.rules_count):
-            self.do_turn()
+            self.play_round()
         print("\nCongratulations! You finished the game!\n")
         self.show_scoreboard_points()
         print(f"Total points: {self.scoreboard.total_points}")
@@ -138,6 +140,6 @@ class YahtzeeGame:
 if __name__ == "__main__":
     try:
         game = YahtzeeGame()
-        game.play()
+        game.play_game()
     except KeyboardInterrupt:
         print("\nExiting...")
