@@ -34,12 +34,13 @@ class ScoreBoard:
 
     def view_points(self, hand: Optional[Hand] = None):
         strs = []
+        padding = max(len(rule.name) for rule in self.rules)
         for idx, rule in enumerate(self.rules):
             points = self.points[idx]
-            view_str = f"{idx + 1}. {rule.name}: "
+            view_str = f"{idx + 1:>2}. {rule.name:.<{padding + 1}}: "
             if hand is not None and points is None:
-                view_str += f"+{rule.assign_points(hand)} points ***"
-            else:
-                view_str += f"{points} points"
+                view_str += f"+ {rule.assign_points(hand):>2} points ***"
+            elif points is not None:
+                view_str += f"{points:>4} points"
             strs.append(view_str)
         return "\n".join(strs)
