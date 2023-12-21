@@ -22,7 +22,7 @@ class YahtzeeGame:
 
     def __init__(self) -> None:
         self.clear_screen()
-        print(
+        input(
             """
         YAHTZEE
 
