@@ -12,6 +12,8 @@ from typing import Optional
 from game import Hand, ScoreBoard
 from game.rules import *
 
+ROUNDS = {1: "1st", 2: "2nd", 3: "3rd"}
+
 
 class YahtzeeGame:
     @staticmethod
@@ -32,7 +34,6 @@ class YahtzeeGame:
         )
 
         # Begin by instantiating the hand and scoreboard
-        self.hand = Hand()
         self.scoreboard = ScoreBoard()
 
         self.scoreboard.register_rules(
@@ -59,8 +60,7 @@ class YahtzeeGame:
         print(self.scoreboard.view_points(hand))
         print("===================================")
 
-    def select_scoring(self):
-        self.show_scoreboard_points(self.hand)
+    def select_scoring(self, hand):
         while True:
             scoreboard_row = input("Choose which scoring to use: ")
             try:
@@ -84,7 +84,7 @@ class YahtzeeGame:
                 )
 
                 if reroll.lower() == "all":
-                    reroll = self.hand.all_dice()
+                    reroll = list(range(1, 6))
 
                 else:
                     # Perform some clean-up of input
@@ -103,31 +103,29 @@ class YahtzeeGame:
                 print("Please try again")
 
     def do_turn(self):
-        rolls = 0
-        selected_dice = self.hand.all_dice()
-        while True:
-            print(f"\nRolling Dice... {rolls}")
-            self.hand.roll(selected_dice)
-            print(self.hand)
+        hand = Hand()
+        selected_dice = hand.all_dice()
+        rolls = 1
+        while rolls <= 3:
+            print(f"\nRolling Dice... {ROUNDS[rolls]} round")
+            if rolls > 1:
+                # choose which dice to re-roll
+                selected_dice = self.choose_dice_reroll()
+                hand.roll(selected_dice)
+            print(hand)
+            self.show_scoreboard_points(hand)
             rolls += 1
 
             # if we reached maximum number of rolls, we are done
-            if rolls >= 3:
+            if rolls > 3 or len(selected_dice) == 0:
+                rule = self.select_scoring(hand)
+                points = self.scoreboard.assign_points(rule, hand)
+                print(f"Adding {points} points to {rule.name}")
+                self.show_scoreboard_points()
+
+                input("\nPress any key to continue")
+                self.clear_screen()
                 break
-
-            # choose which dice to re-roll
-            selected_dice = self.choose_dice_reroll()
-
-            if len(selected_dice) == 0:
-                break
-
-            rule = self.select_scoring()
-            points = self.scoreboard.assign_points(rule, self.hand)
-            print(f"Adding {points} points to {rule.name}")
-            self.show_scoreboard_points()
-
-            input("\nPress any key to continue")
-            self.clear_screen()
 
     def play(self):
         # We keep going until the scoreboard is full
