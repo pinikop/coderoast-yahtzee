@@ -65,10 +65,7 @@ class YahtzeeGame:
             scoreboard_row = input("Choose which scoring to use: ")
             try:
                 scoreboard_row_int = int(re.sub("[^0-9,]", "", scoreboard_row))
-                if (
-                    scoreboard_row_int < 1
-                    or scoreboard_row_int > self.scoreboard.rules_count
-                ):
+                if not (1 <= scoreboard_row_int <= self.scoreboard.rules_count):
                     print("Please select an existing scoring rule.")
                 else:
                     return self.scoreboard.get_rule(scoreboard_row_int - 1)
